@@ -21,9 +21,9 @@ TOY streams use a single MDCT block size. There is no block size switching mecha
 To avoid discontinuities between MDCT blocks, a windowing function is used to smoothly blend between overlapping blocks. TOY currently uses a simple sine-window as defined via:
 
 
-$$
+```math
 w_n = \sin \left[ \frac{n + 0.5}{2N} * \pi \right]
-$$
+```
 
 The window function is applied over two blocks worth of MDCT data, thus the width of the window function is $2N$.
 
@@ -32,10 +32,9 @@ The window function is applied over two blocks worth of MDCT data, thus the widt
 
 With a $2N$-sized buffer $x$ of two consecutive blocks $b$ of sample data, a $N$-sized block of coefficients for a block can be computed as follows:
 
-
-$$
-X_{b,k} \;=\; \sum_{n=0}^{2\mathrm{N}-1} w_n \;x_{_{b\mathrm{N}-\mathrm{N}+n}}\;\;\; \cos \left[\frac{\pi}{\mathrm{N}} \left(n+\frac{1}{2}+\frac{\mathrm{N}}{2}\right) \left(k+\frac{1}{2}\right) \right]\quad
-$$
+```math
+X_{b,k} = \sum_{n=0}^{2\mathrm{N}-1} w_n x_{_{b\mathrm{N}-\mathrm{N}+n}} \cos \left[\frac{\pi}{\mathrm{N}} \left(n+\frac{1}{2}+\frac{\mathrm{N}}{2}\right) \left(k+\frac{1}{2}\right) \right]
+```
 
 Here, $X_{b,k}$ denotes coefficent $k$ within the coefficient block $X$ of block $b$.
 
@@ -44,13 +43,9 @@ Here, $X_{b,k}$ denotes coefficent $k$ within the coefficient block $X$ of block
 
 To reconstruct a $N$-sized block of sample data from coefficients, two consecutive blocks of coefficients $X_b$ and $X_{b+1}$ are processed according to following definition:
 
-$$
-\begin{align}
-    y_{_{b\mathrm{N}+n}} = \frac{2}{\mathrm{N}} \Bigg(  w_{n}             \sum_{k=0}^{\mathrm{N}-1} & X_{b+1,k} \;\!\! \cos \left[\frac{\pi}{\mathrm{N}} \left(n+\frac{1}{2}+\frac{\mathrm{N}}{2}\right) \left(k+\frac{1}{2}\right) \right]
-\\
-    + w_{n+\mathrm{N}}  \sum_{k=0}^{\mathrm{N}-1} & X_{b  ,k} \quad\!\cos \left[\frac{\pi}{\mathrm{N}} \left(n+N+\frac{1}{2}+\frac{\mathrm{N}}{2}\right) \left(k+\frac{1}{2}\right) \right] \Bigg)
-\end{align}
-$$
+```math
+y_{_{b\mathrm{N}+n}} = \frac{2}{\mathrm{N}} \Bigg(w_{n} \sum_{k=0}^{\mathrm{N}-1} X_{b+1,k} \cos \left[\frac{\pi}{\mathrm{N}} \left(n+\frac{1}{2}+\frac{\mathrm{N}}{2}\right) \left(k+\frac{1}{2}\right) \right] \ +\  w_{n+\mathrm{N}} \sum_{k=0}^{\mathrm{N}-1} X_{b,k} \cos \left[\frac{\pi}{\mathrm{N}} \left(n+N+\frac{1}{2}+\frac{\mathrm{N}}{2}\right) \left(k+\frac{1}{2}\right) \right] \Bigg)
+```
 
 #### Implementation in TOY
 
@@ -92,25 +87,25 @@ After scaling and quantizing coefficients, the resulting integer values can have
 
 Any integer value $i$ can be converted to a positive ZigZag-encoded integer via
 
-$$
+```math
 ZigZagEncode(i) =
 \begin{cases}
 2i, &\text{if } i \geq 0 \\
 (-2i)-1, &\text{otherwise}
 \end{cases}
-$$
+```
 
 ### Decode a ZigZag-encoded value
 
 A ZigZag-encoded value $z$ can be converted back to it original signed integer value via
 
-$$
+```math
 ZigZagDecode(z) = 
 \begin{cases}
 z / 2, &\text{if } z \text{ is even} \\
 (-z / 2) - 1, &\text{otherwise}
 \end{cases}
-$$
+```
 
 > **Note:** The division here needs to be an integer division, with digits behind the decimal point being discarded.
 
@@ -220,17 +215,22 @@ Within a mid-side-pair, the channel with the lower index is considered "left" an
 
 #### Encoding Mid-Side
 
-$$
-mid = 0.5 * (left + right) \\
+
+```math
+mid = 0.5 * (left + right)
+```
+```math
 side = 0.5 * (left - right)
-$$
+```
 
 #### Decoding Mid-Side
 
-$$
-left = mid + side \\
+```math
+left = mid + side
+```
+```math
 right = mid - side
-$$
+```
 
 #### Implementation in TOY
 
