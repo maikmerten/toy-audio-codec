@@ -55,15 +55,15 @@ The TOY-implementation of the MDCT is provided in [MDCT.java](./src/main/java/de
 
 ## Quantization
 
-MDCT coefficients are float values that are scaled and quanitized to produce integer values, which then are transmitted in the bitstream.
+MDCT coefficients are float values that are scaled and quantized to produce integer values, which then are transmitted in the bitstream.
 
-### Quanitzation of MDCT coefficients in the encoder
+### Quantization of MDCT coefficients in the encoder
 
 1. all coefficients are scaled by a common _scale_ factor
 1. the scaled coefficients are divided by a _quantizer_ value
 1. the resulting value is rounded to an integer value
 
-The division and the rounding are the _lossy_ part of the lossy codec. By choosing the quanitzer appropriately, the encoder can choose the precision of the transmitted values. A small quantizer means high precision, whereas a big quantizer will result in a low-precision representation of the original value.
+The division and the rounding are the _lossy_ part of the lossy codec. By choosing the quantizer appropriately, the encoder can choose the precision of the transmitted values. A small quantizer means high precision, whereas a big quantizer will result in a low-precision representation of the original value.
 
 ### Reconstruction of MDCT coefficients in the decoder
 
@@ -164,10 +164,10 @@ If 16 bands are used, a complete set of quantization indexes thus is comprised o
 
 The `quantInfo` field in the frame header can assume following values:
 
-- `0b00`: This frame does not contain new quantization indexes. Previously transmitted quanitzation indexes remain valid and in use.
+- `0b00`: This frame does not contain new quantization indexes. Previously transmitted quantization indexes remain valid and in use.
 - `0b01`: unused/invalid value
-- `0b10`: This frame contains new quantization indexes. One set of quanitzation indexes is transmitted. This single set of quanitzation indexes is used for all channels.
-- `0b11`: This frame contains new quantization indexes. For every channel an individual set of quanitzation indexes is transmitted and used for the respective channel.
+- `0b10`: This frame contains new quantization indexes. One set of quantization indexes is transmitted. This single set of quantization indexes is used for all channels.
+- `0b11`: This frame contains new quantization indexes. For every channel an individual set of quantization indexes is transmitted and used for the respective channel.
 
 > **Note:** These values are chosen so that when seeking, decoding can resume on a frame with a frame header where the most significant five bits are set (`sync` bits and most significant bit of `quantInfo`).
 
